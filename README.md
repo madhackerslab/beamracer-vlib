@@ -4,15 +4,12 @@
  
  https://beamracer.net
 
-# Examples
+# vlib
 
- Available examples of BeamRacer routines and display lists:
+ Assembler headers and utility functions for BeamRacer VASYL chip.
+ See https://docs.beamracer.net/ for more information.
 
- * [demo_irq.s](asm/demo_irq.s) - Demonstrates how to simultaneously handle VIC and VASYL interrupts.
- * [demo_logo.s](asm/demo_logo.s) - Loads and activates a display list that changes background color at the right moments.
- * [demo_rasterbars_cpu.s](asm/demo_rasterbars_cpu.s) - Fancy rasterbars
-
- Example binaries can be found in [asm/bin/](asm/bin) directory.
+ Compatible with ca65 assembler (part of https://github.com/cc65). 
 
 # Support
 
