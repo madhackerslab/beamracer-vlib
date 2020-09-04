@@ -17,25 +17,9 @@
 
 # Bug reports
 
- Please report any issue using [GitHub's project tracker](https://github.com/madhackerslab/beamracer-examples/issues).
+ Please report any issue using [GitHub's project tracker](https://github.com/madhackerslab/beamracer-vlib/issues).
  If you'd like to contribute to the this project, please send regular pull request. But we recommend to open new
- [ticket](https://github.com/madhackerslab/beamracer-examples/issues) before doing any work.
-
-# Cloning the repository
-
- **NOTE:** this project uses [git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules),
- it's required to either use `--recurse-submodules` to get all the dependencies during cloning:
-
-    git clone --recurse-submodules https://github.com/madhackerslab/beamracer-examples
-
- or to pull them manually by doing:
-
-```
-git submodule init
-git submodule update
-```
-
- after cloning the repository.
+ [ticket](https://github.com/madhackerslab/beamracer-vlib/issues) before doing any work.
 
 # License
 
