@@ -1,10 +1,13 @@
-;****************************************************************************
-;* A set of utility routines for programming BeamRacer VASYL chip
-;* 2019-2020 MHL
-;* See https://docs.beamracer.net/ for more information.
-;*
-;* Compatible with ca65 assembler (part of https://github.com/cc65).
-;****************************************************************************
+;; Beam Racer * https://beamracer.net
+; Video and Display List coprocessor board for the Commodore 64
+; Copyright (C)2019-2020 Mad Hackers Lab
+;
+; https://github.com/madhackerslab/
+;
+; Header file for BeamRacer VASYL chip
+; See https://docs.beamracer.net/ for more information.
+;
+; Compatible with ca65 assembler (part of https://github.com/cc65).
 
 .ifndef VREG_BASE
         .include "vasyl.s"
