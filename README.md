@@ -20,7 +20,7 @@
 
 # Bug reports
 
- Please report any issue spotted using [GitHub's project tracker](https://github.com/madhackerslab/beamracer-examples/issues).
+ Please report any issue using [GitHub's project tracker](https://github.com/madhackerslab/beamracer-examples/issues).
  If you'd like to contribute to the this project, please send regular pull request. But we recommend to open new
  [ticket](https://github.com/madhackerslab/beamracer-examples/issues) before doing any work.
 
