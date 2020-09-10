@@ -9,42 +9,42 @@
 ; Macros for assembling VASYL opcodes.
 
 .macro WAIT v, h
-        .dbyt (v & $01ff) | ((h & $3f) << 9)
+        .dbyt ((v) & $01ff) | (((h) & $3f) << 9)
 .endmacro
 
 .macro DELAYH v, h
         .ifblank h  ; this means only one arg was given
                     ; so "v" actually the horizontal delay
-            .byte %10110000, (v & $3f)
+            .byte %10110000, ((v) & $3f)
         .else
-            .byte %10110000, ((v & $03) << 6) | (h & $3f)
+            .byte %10110000, (((v) & $03) << 6) | ((h) & $3f)
         .endif
 .endmacro
 
 .macro DELAYV v
-        .dbyt (%10111000 << 8) | (v & $01ff)
+        .dbyt (%10111000 << 8) | ((v) & $01ff)
 .endmacro
 
 .macro MASKH h
-        .byte %10110100, (h & $3f)
+        .byte %10110100, ((h) & $3f)
 .endmacro
 .macro MASKV v
-        .dbyt (%10111100 << 8) |  (v & $01ff)
+        .dbyt (%10111100 << 8) |  ((v) & $01ff)
 .endmacro
 
 .macro MASKPH h
-        .byte %10110110, (h & $3f)
+        .byte %10110110, ((h) & $3f)
 .endmacro
 .macro MASKPV v
-        .dbyt (%10111110 << 8)|  (v & $01ff)
+        .dbyt (%10111110 << 8)|  ((v) & $01ff)
 .endmacro
 
 .macro SETA v
-        .byte %10110010, (v & $ff)
+        .byte %10110010, ((v) & $ff)
 .endmacro
 
 .macro SETB v
-        .byte %10110011, (v & $ff)
+        .byte %10110011, ((v) & $ff)
 .endmacro
 
 .macro DECA
@@ -56,14 +56,14 @@
 .endmacro
 
 .macro MOV reg, value
-        .if (reg & $ff) < VREG_MAX && (((reg & $ff00) = VIC_BASE) || ((reg & $ff00) = $0))
-            .if (reg & $ff) < VREG_INT
-                .byte $c0 | (reg & $3f), (value & $ff)
+        .if ((reg) & $ff) < VREG_MAX && ((((reg) & $ff00) = VIC_BASE) || (((reg) & $ff00) = $0))
+            .if ((reg) & $ff) < VREG_INT
+                .byte $c0 | ((reg) & $3f), ((value) & $ff)
             .else
-                .byte $80 | ((reg - VREG_INT) & $0f), (value & $ff)
+                .byte $80 | (((reg) - VREG_INT) & $0f), ((value) & $ff)
             .endif
         .else
-            .error .sprintf("MOV: register out of range: $%x", reg);
+            .error .sprintf("MOV: register out of range: $%x", (reg));
         .endif
 .endmacro
 
@@ -84,29 +84,33 @@
 .endmacro
 
 .macro BADLINE l
-        .byte %10101000 | (l & $07)
+        .byte %10101000 | ((l) & $07)
 .endmacro
 
-.macro XFER v, c
-        .byte %10100101, ((c & 1) << 7) | (v - VIC_BASE)
+.macro XFER reg, c
+        .if ((reg) & $ff) < VREG_MAX && ((((reg) & $ff00) = VIC_BASE) || (((reg) & $ff00) = $0))
+            .byte %10100101, (((c) & 1) << 7) | ((reg) & $ff)
+        .else
+            .error .sprintf("XFER: register out of range: $%x", (reg));
+        .endif
 .endmacro
 
 .macro BRA target
         .if .const (target)
-            .if target >= -128 && target <= 127
-                .byte %10100011, target
+            .if (target) >= -128 && (target) <= 127
+                .byte %10100011, (target)
             .else
-                .error .sprintf ("BRA: target out of range: %d bytes away", target)
+                .error .sprintf ("BRA: target out of range: %d bytes away", (target))
             .endif
         .else
             .ifndef target
-                .byte %10100011, (target - (* + 1)) & $ff
+                .byte %10100011, ((target) - (* + 1)) & $ff
                 .warning "Forward BRA assembled without bounds checking."
             .else
-                .if (target -(* + 1)) >= -128 && (target -(* + 1)) <= 127
-                    .byte %10100011, (target - (* + 1)) & $ff
+                .if ((target) -(* + 1)) >= -128 && ((target) -(* + 1)) <= 127
+                    .byte %10100011, ((target) - (* + 1)) & $ff
                 .else
-                    .error .sprintf ("BRA: target out of range: %s is %d bytes away", .string(target), target -(* + 1))
+                    .error .sprintf ("BRA: target out of range: %s is %d bytes away", .string(target), (target) -(* + 1))
                 .endif
             .endif
         .endif
