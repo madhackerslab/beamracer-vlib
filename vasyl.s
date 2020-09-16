@@ -91,7 +91,7 @@
 .endmacro
 
 .macro XFER reg, c
-        .if ((reg) & $ff) < VREG_MAX && ((((reg) & $ff00) = VIC_BASE) || (((reg) & $ff00) = $0))
+        .if ((reg) & $ff) <= VREG_MAX && ((((reg) & $ff00) = VIC_BASE) || (((reg) & $ff00) = $0))
             .byte %10100101, (((c) & 1) << 7) | ((reg) & $ff)
         .else
             .error .sprintf("XFER: register out of range: $%x", (reg));
