@@ -13,6 +13,8 @@
         .include "vasyl.s"
 .endif
 
+        .import __VASYL_LOAD__, __VASYL_SIZE__
+
 tmp_ptr = 250
 tmp_ptr2 = 252
 
@@ -72,7 +74,7 @@ knock_knock:
 
 .ifref copy_and_activate_dlist
 ; Copy a dlist to local RAM and activate it:
-; everything between labels "dlist" and "dlend" is copied
+; the contents of segment "VASYL" is copied
 ; to address 0 in local RAM and then the display list
 ; is activated.
 
@@ -89,19 +91,19 @@ copy_and_activate_dlist:
 
 .ifref copy_dlist
 ; Copy a dlist to local RAM:
-; everything between labels "dlist" and "dlend" is copied
+; the contents of segment "VASYL" is copied
 ; to address 0 in local RAM.
 copy_dlist:
-        lda #<dlist
+        lda #<__VASYL_LOAD__
         sta tmp_ptr
-        lda #>dlist
+        lda #>__VASYL_LOAD__
         sta tmp_ptr + 1
         lda #0
         sta tmp_ptr2
         sta tmp_ptr2 + 1
 
-        lda #<(dlend - dlist)
-        ldx #>(dlend - dlist)
+        lda #<__VASYL_SIZE__
+        ldx #>__VASYL_SIZE__
         jmp copy_to_lmem
 .endif
 
@@ -139,6 +141,30 @@ copy_to_lmem:
         lda tmp_ptr2 + 1
         cmp tmp_ptr + 1
         bne @loop
+        rts
+.endif
+
+.ifref set_pages
+; Set VASYL memory pages to a value.
+; A - value
+; Y - starting page
+; X - page count
+UNROLL_FACTOR = 8
+set_pages:
+        sty VREG_ADR0 + 1
+        ldy #1
+        sty VREG_STEP0
+        dey ; 0
+        sty VREG_ADR0
+        dey ; 255
+        sta VREG_PORT0  ; Store one byte.
+@next_page:
+        sty VREG_REP0   ; Repeat 255 times on first iteration, 256 on subsequent ones.
+@waitrep:
+        ldy VREG_REP0   ; Wait for REP transfer to end.
+        bne @waitrep
+        dex
+        bne @next_page
         rts
 .endif
 
@@ -187,3 +213,4 @@ type_ntsc_old:
 type_unknown:
         .byte "unknown", 0
 .endif
+
