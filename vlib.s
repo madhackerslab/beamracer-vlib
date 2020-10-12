@@ -1,4 +1,4 @@
-;; Beam Racer * https://beamracer.net
+; BeamRacer * https://beamracer.net
 ; Video and Display List coprocessor board for the Commodore 64
 ; Copyright (C)2019-2020 Mad Hackers Lab
 ;
@@ -15,8 +15,8 @@
 
         .import __VASYL_LOAD__, __VASYL_SIZE__
 
-tmp_ptr = 250
-tmp_ptr2 = 252
+tmp_ptr = 251
+tmp_ptr2 = 253
 
 ; this only gets assembled if there is no knocking ahead of it
 .ifnref knock_knock
@@ -35,7 +35,10 @@ autostart:
         jsr $ffe4   ; check if key pressed
         beq @keyloop
 
-        lda #0      ; turn off the display list
+        cmp #3
+        beq @no_restore
+
+        lda #0      ; turn off display list
         sta VREG_CONTROL
 
         ldx #$2e
@@ -44,7 +47,7 @@ autostart:
         sta $d000,x
         dex
         bpl @preserve_loop2
-
+@no_restore:
         rts
 preserve_vic:
         .res 47
@@ -81,8 +84,9 @@ knock_knock:
 copy_and_activate_dlist:
         jsr copy_dlist
         ; start using the new Display List
-        lda #0
+        lda #<dl_start
         sta VREG_DLIST
+        lda #>dl_start
         sta VREG_DLIST + 1
         lda #(1 << CONTROL_DLIST_ON_BIT)
         sta VREG_CONTROL
